@@ -291,7 +291,6 @@ Object.defineProperty(window, "localStorage", {
 export default defineConfig(({ mode }) => {
   const rootEnv = loadEnv(mode, path.resolve(import.meta.dirname, "../.."), "");
   const api = process.env.API_PROXY_TARGET ?? rootEnv.API_PROXY_TARGET ?? "http://127.0.0.1:3100";
-  const previewHost = process.env.RAKAZO_HOST ?? rootEnv.RAKAZO_HOST ?? "localhost";
   const screenProxySecret = () =>
     resolveScreenProxySecret({
       ...process.env,
@@ -337,9 +336,10 @@ export default defineConfig(({ mode }) => {
       },
     ],
     server: {
-      host: "127.0.0.1",
+      host: "0.0.0.0",
       port: webPort,
       strictPort: true,
+      allowedHosts: true,
       proxy: {
         "/api": { target: api, changeOrigin: true },
         "/rpc": { target: api, changeOrigin: true },
@@ -348,7 +348,7 @@ export default defineConfig(({ mode }) => {
     preview: {
       host: "0.0.0.0",
       port: Number(process.env.WEB_PORT ?? 5173),
-      allowedHosts: [previewHost],
+      allowedHosts: true,
       proxy: {
         "/api": { target: api, changeOrigin: true },
         "/rpc": { target: api, changeOrigin: true },
